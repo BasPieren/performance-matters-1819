@@ -1,0 +1,16 @@
+<% include ../partials/header %>
+
+<main>
+  <article>
+    <h3>Episode <%= data.episode_id %></h3>
+    <h2><%= data.title %></h2>
+    <p><%= data.opening_crawl %></p>
+    <div>
+      <p><span>Release date: </span><%= data.release_date %></p>
+      <p><span>Producer: </span><%= data.producer %></p>
+    </div>
+    <a href="/">Back</a>
+  </article>
+</main>
+
+<% include ../partials/footer %>
