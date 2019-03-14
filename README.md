@@ -31,7 +31,8 @@ cd performance-matters-1819
 ### Packages and Technologies
 This project makes use of the following packages and technologies:
 
-  * None!
+  * [Node.js](https://nodejs.org/en/)
+  * [Express](https://expressjs.com/)
 
 ## API 🐒
 I made use of the following API for this project:
