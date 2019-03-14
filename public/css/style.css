@@ -54,6 +54,10 @@ div p {
   font-weight: 300;
 }
 
+div p span {
+  font-weight: bolder;
+}
+
 a{
   display: block;
   padding: 0.5em 1em;
