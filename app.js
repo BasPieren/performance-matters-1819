@@ -12,6 +12,7 @@ app
   .use(express.static('public'))
 
   .get('/', homePage)
+  .get('/:episode_id', detailPage)
 
   .listen(port, () => console.log(`Example app listening on port ${port}!`))
 
@@ -21,8 +22,27 @@ function homePage(req, res) {
     console.log('statusCode:', response && response.statusCode)
 
     let data = filterData(JSON.parse(body))
-    console.log(data)
-    res.render('pages/index.ejs', { data: data })
+
+    if (response.statusCode === 404) {
+      res.render('pages/404.ejs')
+    } else {
+      res.render('pages/index.ejs', { data: data })
+    }
+  })
+}
+
+function detailPage(req, res) {
+  request('https://swapi.co/api/films/' + req.params.episode_id, (error, response, body) => {
+    console.log('error:', error)
+    console.log('statusCode:', response && response.statusCode)
+
+    let data = JSON.parse(body)
+
+    if (response.statusCode === 404) {
+      res.render('pages/404.ejs')
+    } else {
+      res.render('pages/detail.ejs', { data: data })
+    }
   })
 }
 
