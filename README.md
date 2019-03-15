@@ -32,6 +32,8 @@ To install this application enter the following into your terminal:
 git clone https://github.com/BasPieren/performance-matters-1819.git
 
 cd performance-matters-1819
+
+npm run server
 ```
 
 ### Packages and Technologies
