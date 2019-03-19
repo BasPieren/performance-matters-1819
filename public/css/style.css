@@ -9,6 +9,7 @@
 }
 
 body {
+  background-color: #000000;
   background-image: url(../images/background-image.jpg);
 }
 
@@ -51,6 +52,7 @@ img + a {
 
 div p {
   font-family: 'Open Sans', sans-serif;
+  font-size: 0.8em;
   font-weight: 300;
 }
 
