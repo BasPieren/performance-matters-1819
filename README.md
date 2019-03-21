@@ -13,6 +13,7 @@ This is the repo for the Performance Matters course.
 * [How It Works](#how-it-works-️)
   * [Network Test](#network-test)
   * [Audits](#audits)
+  * [Minify](#minify)
 * [Sources](#sources-)
   * [Honourable Mentions](#honourable-mentions)
 * [Licence](#licence-)
@@ -21,7 +22,7 @@ This is the repo for the Performance Matters course.
 This is a list of things I want to do in this course:
 
 - [X] Turn my [client side app](https://github.com/BasPieren/web-app-from-scratch-18-19) into an server side app.
-- [ ] Optimize my CSS.
+- [X] Optimize my CSS.
 - [ ] Optimize with client side Javascript.
 
 ## Description 📝
@@ -84,13 +85,66 @@ I also ran an audits test. This test gives your website or web app a score in 5 
 ![Server side app](https://i.imgur.com/vLHVhqe.png)
 > Server side audits test
 
+
+### Perceived Performance
+To enhance the perceived performance of the web app I took the following steps:
+
+  1. I gave the `body` both a `background-image` and a `background-color` so that when the background image is loading, which takes about ~3 seconds, the user doesn't see a white background but a black background which matches with the background image that is loading in.
+
+  ```css
+  body {
+    background-color: #000000;
+    background-image: url(../images/background-image.jpg);
+  }
+  ```
+
+  2. I also made sure that the `h1` element, which uses a custom font, still gets loaded in directly with a fallback font by using `font-display: swap` which loads a fallback font when the font face is not yet loaded.
+
+  ```css
+  @font-face {
+    font-family:"STARWARS";
+    src: url("../fonts/STARWARS/STARWARS.woff") format("woff");
+    font-display: swap;
+  }
+  ```
+
+### Minify
+To minify my CSS I used *gulp*, *gulp-concat* and *gulp-cssnano*.
+
+  1. *gulp-concat* removes all unnecessary characters from the css file like for example spaces.  
+
+  2. *gulp-cssnano* removes all comments.
+
+  ```js
+  const gulp = require('gulp'),
+        concat = require('gulp-concat'),
+        cssnano = require('gulp-cssnano'),
+        baseDir = 'public/css/'
+
+  gulp.src([
+    baseDir + 'style.css'
+  ])
+    .pipe(concat('style-min.css'))
+    .pipe(cssnano({ discardComments: { removeAll:true }}))
+    .pipe(gulp.dest('public/css/'))
+  ```
+
+### Compression
+To compress the responses that the server sends to the client I made use of `compression`. By doing this the size of the localhost gets decreased from 1.4KB to 796KB.
+
+![Localhost before compression](https://i.imgur.com/UwMC7qe.png)
+> Before compression
+
+![Localhost after compression](https://i.imgur.com/uzCpCbK.png)
+> After compression
+
 ## Sources 📚
 
   * None!
 
 ### Honourable Mentions
 
-  * None!
+  * [Declan Rek](https://github.com/decrek)
 
 ## Licence 🔓
 MIT © [Bas Pieren](https://github.com/BasPieren)
