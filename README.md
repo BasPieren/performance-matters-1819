@@ -34,6 +34,8 @@ git clone https://github.com/BasPieren/performance-matters-1819.git
 
 cd performance-matters-1819
 
+npm install
+
 npm run server
 ```
 
@@ -42,6 +44,12 @@ This project makes use of the following packages and technologies:
 
   * [Node.js](https://nodejs.org/en/)
   * [Express](https://expressjs.com/)
+  * [EJS](https://ejs.co/)
+  * [Request](https://www.npmjs.com/package/request)
+  * [Compression](https://www.npmjs.com/package/compression)
+  * [gulp](https://www.npmjs.com/package/gulp)
+  * [gulp-concat](https://www.npmjs.com/package/gulp-concat-css)
+  * [gulp-cssnano](https://www.npmjs.com/package/gulp-cssnano)
 
 ## API 🐒
 I made use of the following API for this project:
