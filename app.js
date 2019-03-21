@@ -10,6 +10,11 @@ app
   .set('view engine', 'ejs')
   .set('views', 'views')
 
+  .use((req, res, next) => {
+    res.setHeader('Cache-Control', 'max-age=' + 365 * 24 * 60 *
+    60);
+      next();
+  })
   .use(express.static('public'))
   .use(compression())
 
