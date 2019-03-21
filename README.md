@@ -13,7 +13,9 @@ This is the repo for the Performance Matters course.
 * [How It Works](#how-it-works-️)
   * [Network Test](#network-test)
   * [Audits](#audits)
+  * [Perceived Performance](#perceived-performance)
   * [Minify](#minify)
+  * [Compression](#compression)
 * [Sources](#sources-)
   * [Honourable Mentions](#honourable-mentions)
 * [Licence](#licence-)
@@ -26,6 +28,7 @@ This is a list of things I want to do in this course:
 - [ ] Optimize with client side Javascript.
 
 ## Description 📝
+The goal for this course is to learn more about web performance by turning a client side app into a server side app and using different performance optimization methods.
 
 ## Installing 🔍
 To install this application enter the following into your terminal:
