@@ -16,6 +16,7 @@ This is the repo for the Performance Matters course.
   * [Perceived Performance](#perceived-performance)
   * [Minify](#minify)
   * [Compression](#compression)
+  * [Caching](#caching)
 * [Sources](#sources-)
   * [Honourable Mentions](#honourable-mentions)
 * [Licence](#licence-)
@@ -148,6 +149,23 @@ To compress the responses that the server sends to the client I made use of `com
 
 ![Localhost after compression](https://i.imgur.com/uzCpCbK.png)
 > After compression
+
+### Caching
+I also looked at making use of caching. You can make use of caching by setting the `max-age` inside the `Cache-Control` to for example 1 year. This way the files don't have to be re downloaded when a user visits the page.
+
+```js
+.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'max-age=' + 365 * 24 * 60 *
+  60);
+    next();
+})
+```
+
+![Before caching](https://i.imgur.com/evAkKLG.png)
+> Before caching
+
+![After caching](https://i.imgur.com/0DW6dAf.png)
+> After caching
 
 ## Sources 📚
 
