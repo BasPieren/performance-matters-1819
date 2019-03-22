@@ -7,7 +7,8 @@
     "start": "node app.js",
     "server": "nodemon app.js",
     "style-min": "node tasks/style.js",
-    "style-rev": "node tasks/revision-hash.js"
+    "style-rev": "node tasks/revision-hash.js",
+    "style-rev-replace": "node tasks/revision-hash-replace.js"
   },
   "repository": {
     "type": "git",
