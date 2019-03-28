@@ -10,16 +10,17 @@ app
   .set('view engine', 'ejs')
   .set('views', 'views')
 
-  .use((req, res, next) => {
-    res.setHeader('Cache-Control', 'max-age=' + 365 * 24 * 60 *
-    60);
-      next();
-  })
+  // .use((req, res, next) => {
+  //   res.setHeader('Cache-Control', 'max-age=' + 365 * 24 * 60 *
+  //   60);
+  //     next();
+  // })
   .use(express.static('public'))
   .use(compression())
 
   .get('/', homePage)
-  .get('/:episode_id', detailPage)
+  .get('/episode/:episode_id', detailPage)
+  .get('/offline', offlinePage)
 
   .listen(port, () => console.log(`Example app listening on port ${port}!`))
 
@@ -51,6 +52,10 @@ function detailPage(req, res) {
       res.render('pages/detail.ejs', { data: data })
     }
   })
+}
+
+function offlinePage(req, res) {
+  res.render('pages/offline.ejs')
 }
 
 function filterData(e) {
