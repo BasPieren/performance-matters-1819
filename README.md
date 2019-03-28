@@ -17,6 +17,7 @@ This is the repo for the Performance Matters course.
   * [Minify](#minify)
   * [Compression](#compression)
   * [Caching](#caching)
+  * [Service Worker](#service-worker)
 * [Sources](#sources-)
   * [Honourable Mentions](#honourable-mentions)
 * [Licence](#licence-)
@@ -76,27 +77,30 @@ The Star Wars API allows you to get data on different Star Wars subjects like th
 Here I explain which steps I took to optimize my product.
 
 ### Network Test
-After turning my client side app into a server side app I tested the network speed of each one on a slow 3G connection. This where the results:
+First after turning my client side app into a server side app I tested the network speed of both the client and the server side app on a slow 3G connection using the Chrome dev tools.
+
+This where the results that came out of that test:
 
 ![Client side app](https://i.imgur.com/tz9HYvo.png)
-> Client side network speed test
+> *Client side network speed test load time: __13.50s__*
 
 ![Server side app](https://i.imgur.com/8i4fJEd.png)
-> Server side network speed test
+> *Server side network speed test load time: __8.33s__*
 
 The first that stands out is the difference between the amount of documents that the client has to download and the time it takes. The client side app takes around 14 seconds to download where the server side app takes "just" 8 seconds.
 
-The server side app is able to do this because everything is rendered server side so this reduces the amount strain on the client.
+The server side app is able to do this because everything is rendered on the server so this reduces the amount strain and calculation the client has to do.
 
 ### Audits
-I also ran an audits test. This test gives your website or web app a score in 5 categories: performance, progressive web app, accessiblity, best practices and SEO.
+I also ran an audits test using Lighthouse which is also build into the Chrome dev tools. This test gives your website or web app a score in 5 categories: performance, progressive web app, accessiblity, best practices and SEO.
 
 ![Client side app](https://i.imgur.com/xMpIaPT.png)
-> Client side audits test
+> *Client side audits test*
 
 ![Server side app](https://i.imgur.com/vLHVhqe.png)
-> Server side audits test
+> *Server side audits test*
 
+Here the differences between client and server weren't to big. This is probably because the app itself in't to big so the differences are not really noticeable.
 
 ### Perceived Performance
 To enhance the perceived performance of the web app I took the following steps:
@@ -123,9 +127,9 @@ To enhance the perceived performance of the web app I took the following steps:
 ### Minify
 To minify my CSS I used *gulp*, *gulp-concat* and *gulp-cssnano*.
 
-  1. *gulp-concat* removes all unnecessary characters from the css file like for example spaces.  
+  1. *gulp-concat* Allows you to merge multiple css files into one single file.
 
-  2. *gulp-cssnano* removes all comments.
+  2. *gulp-cssnano* removes all unnecessary characters from the css file like for example spaces.
 
   ```js
   const gulp = require('gulp'),
@@ -142,16 +146,22 @@ To minify my CSS I used *gulp*, *gulp-concat* and *gulp-cssnano*.
   ```
 
 ### Compression
-To compress the responses that the server sends to the client I made use of `compression`. By doing this the size of the localhost gets decreased from 1.4KB to 796KB.
+To compress the responses that the server sends to the client I made use of the npm package *compression*. Compression is a Node.js compression middleware and supports deflate and gzip. By doing this the size of the localhost gets decreased from 1.4KB to 796KB.
+
+```js
+compression = require('compression'),
+
+.use(compression())
+```
 
 ![Localhost before compression](https://i.imgur.com/UwMC7qe.png)
-> Before compression
+> *Before compression*
 
 ![Localhost after compression](https://i.imgur.com/uzCpCbK.png)
-> After compression
+> *After compression*
 
 ### Caching
-I also looked at making use of caching. You can make use of caching by setting the `max-age` inside the `Cache-Control` to for example 1 year. This way the files don't have to be re downloaded when a user visits the page.
+I also looked at making use of caching. You can make use of caching by setting the `max-age` inside the `Cache-Control` to for example 1 year. This way the files don't have to be re-downloaded when a user visits the page. This has a huge impact on your load time.
 
 ```js
 .use((req, res, next) => {
@@ -167,9 +177,80 @@ I also looked at making use of caching. You can make use of caching by setting t
 ![After caching](https://i.imgur.com/0DW6dAf.png)
 > After caching
 
+### Service Worker
+Finally I implemented a service worker. Service workers act as a proxy server that sits between the server and the client. I used it to cache all my static files, in this case my CSS and Javascript and to generate an offline page.
+
+First we register the service worker so it can start its installation in the background which we use to cache our static files. We point to the sw.js files. This is where the logic will happen. We also use `return registration.update()` so that we can update changes to our service worker automatically with every refresh.
+
+```js
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', function() {
+  navigator.serviceWorker.register('/sw.js').then(function(registration) {
+    console.log('ServiceWorker registration successful with scope: ', registration.scope)
+
+    return registration.update()
+  }, function(err) {
+    console.log('ServiceWorker registration failed: ', err)
+  })
+})
+}
+```  
+
+Then we start handling the install event. We open our cache and add the desired files to it.  
+
+```js
+const cacheName = 'my-site-cache-v1',
+      urlsToCache = ['css/style-min.css', 'js/script.js']
+
+self.addEventListener('install', function(event) {
+  event.waitUntil(
+    caches.open(cacheName)
+      .then(function(cache) {
+        console.log('Opened cache')
+        return cache.addAll(urlsToCache)
+      })
+      .catch(err => console.error(err))
+  )
+  event.waitUntil(self.skipWaiting())
+})
+```
+
+Finally we start handling the fetch event. When the service worker finds a match in the cache it returns it. If no match its found it caches the page using `respone.clone()`.
+
+```js
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+    caches.match(event.request)
+      .then(function(response) {
+        if (response) {
+          return response
+        }
+
+        return fetch(event.request).then(
+          function(response) {
+            if(!response || response.status !== 200 || response.type !== 'basic') {
+              return response
+            }
+
+            var responseToCache = response.clone()
+
+            caches.open(cacheName)
+              .then(function(cache) {
+                cache.put(event.request, responseToCache)
+              })
+
+            return response
+          }
+        )
+      })
+      .catch(err => console.error(err))
+    )
+})
+```
+
 ## Sources 📚
 
-  * None!
+  * [Service Workers: an Introduction](https://developers.google.com/web/fundamentals/primers/service-workers/)
 
 ### Honourable Mentions
 
