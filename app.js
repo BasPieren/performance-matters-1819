@@ -22,7 +22,7 @@ app
   .get('/episode/:episode_id', detailPage)
   .get('/offline', offlinePage)
 
-  .listen(port, () => console.log(`Example app listening on port ${port}!`))
+  .listen(process.env.PORT || port)
 
 function homePage(req, res) {
   request('https://swapi.co/api/films/', (error, response, body) => {
